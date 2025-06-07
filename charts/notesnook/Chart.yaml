@@ -1,0 +1,21 @@
+apiVersion: v2
+name: notesnook
+description: A Helm chart for Notesnook self-hosted deployment
+type: application
+version: 0.1.0
+# renovate datasource=docker depName=docker.io/streetwriters/notesnook-sync
+appVersion: "v1.0-beta.1"
+kubeVersion: ">=1.28.0-0"
+dependencies:
+  - name: common
+    repository: https://bjw-s-labs.github.io/helm-charts
+    version: 4.0.1
+  - name: mailhog
+    repository: https://codecentric.github.io/helm-charts
+    version: 5.8.0
+    condition: mailhog.enabled
+sources:
+  - https://github.com/danielclasen/charts
+maintainers:
+  - name: danielclasen
+    email: daniel@clsn.cloud

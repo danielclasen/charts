@@ -1,0 +1,135 @@
+---
+{{- include "bjw-s.common.loader.init" . }}
+
+{{- define "notesnook.hardcodedEnv" -}}
+env:
+  NOTESNOOK_SERVER_PORT: 5264
+  NOTESNOOK_SERVER_HOST: notesnook-main
+  IDENTITY_SERVER_PORT: 8264
+  IDENTITY_SERVER_HOST: notesnook-identity
+  SSE_SERVER_PORT: 7264
+  SSE_SERVER_HOST: notesnook-sse
+  MONOGRAPH_PORT: 3000
+  MONOGRAPH_HOST: notesnook-monograph
+  SELF_HOSTED: 1
+  IDENTITY_SERVER_URL: {{ .Values.env.AUTH_SERVER_PUBLIC_URL }}
+  NOTESNOOK_APP_HOST: {{ .Values.env.NOTESNOOK_APP_PUBLIC_URL }}
+
+{{- end -}}
+{{- $_ := mergeOverwrite .Values (include "notesnook.hardcodedEnv" . | fromYaml) -}}
+
+{{- define "notesnook.hardcodedValues" -}}
+controllers:
+  # Configure the main controller
+  main:
+    annotations:
+      reloader.stakater.com/auto: "true"
+    defaultContainerOptions:
+      env:
+      {{- .Values.env | toYaml | nindent 8 }}
+    containers:
+      # Configure the main application container
+      main:
+        image:
+          repository: docker.io/streetwriters/notesnook-sync
+          tag: "{{ .Chart.AppVersion }}"
+        livenessProbe:
+            tcpSocket:
+              port: {{ .Values.env.NOTESNOOK_SERVER_PORT }}
+        readinessProbe:
+            tcpSocket:
+              port: {{ .Values.env.NOTESNOOK_SERVER_PORT }}
+      sse:
+        image:
+          repository: docker.io/streetwriters/sse
+          tag: "{{ .Chart.AppVersion }}"
+        livenessProbe:
+            tcpSocket:
+              port: {{ .Values.env.SSE_SERVER_PORT }}
+        readinessProbe:
+            tcpSocket:
+              port: {{ .Values.env.SSE_SERVER_PORT }}
+      monograph:
+        image:
+          repository: docker.io/streetwriters/monograph
+          # renovate datasource=docker depName=docker.io/streetwriters/monograph
+          tag: 1.2.4
+        env:
+          API_HOST: http://{{ .Values.env.MONOGRAPH_HOST }}:{{ .Values.env.MONOGRAPH_PORT }}
+          PUBLIC_URL: {{ .Values.env.MONOGRAPH_PUBLIC_URL }}
+        livenessProbe:
+            tcpSocket:
+              port: {{ .Values.env.MONOGRAPH_PORT }}
+        readinessProbe:
+            tcpSocket:
+              port: {{ .Values.env.MONOGRAPH_PORT }}
+      identity:
+        image:
+          repository: docker.io/streetwriters/identity
+          tag: "{{ .Chart.AppVersion }}"
+        livenessProbe:
+            tcpSocket:
+              port: {{ .Values.env.IDENTITY_SERVER_PORT }}
+        readinessProbe:
+            tcpSocket:
+              port: {{ .Values.env.IDENTITY_SERVER_PORT }}
+
+service:
+  main:
+    enabled: true
+    ports:
+      sync:
+        port: {{ .Values.env.NOTESNOOK_SERVER_PORT }}
+  sse:
+    enabled: true
+    ports:
+      sse:
+        port: {{ .Values.env.SSE_SERVER_PORT }}
+  identity:
+    enabled: true
+    ports:
+      auth:
+        port: {{ .Values.env.IDENTITY_SERVER_PORT }}  
+  monograph:
+    enabled: true
+    ports:
+      http:
+        port: {{ .Values.env.MONOGRAPH_PORT }}
+
+ingress:
+  main:
+    annotations:
+      kubernetes.io/ingress.class: {{ .Values.ingress.main.className }}
+    hosts:
+      - host: {{ template "helper.urlToHostname" .Values.env.NOTESNOOK_APP_PUBLIC_URL }}
+        paths:
+          - path: /
+            service:
+              identifier: main
+              port: sync
+  monograph:
+    annotations:
+      kubernetes.io/ingress.class: {{ .Values.ingress.monograph.className }}
+    hosts:
+      - host: {{ template "helper.urlToHostname" .Values.env.MONOGRAPH_PUBLIC_URL }}
+        paths:
+          - path: /
+            service:
+              identifier: monograph
+              port: http
+  identity:
+    annotations:
+      kubernetes.io/ingress.class: {{ .Values.ingress.identity.className }}
+    hosts:
+      - host: {{ template "helper.urlToHostname" .Values.env.AUTH_SERVER_PUBLIC_URL }}
+        paths:
+          - path: /
+            service:
+              identifier: identity
+              port: auth    
+
+{{- end -}}
+{{- $_ := mergeOverwrite .Values (include "notesnook.hardcodedValues" . | fromYaml) -}}
+
+{{/* Render the templates */}}
+{{ include "bjw-s.common.loader.generate" . }}

@@ -1,0 +1,2 @@
+env:
+  MONGODB_CONNECTION_STRING: mongodb://ci-user:ci-pass@fake-mongo-svc.default.svc.cluster.local:27017/notesnook?ssl=false

@@ -1,0 +1,36 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/refs/tags/app-template-4.0.1/charts/other/app-template/values.schema.json
+ingress:
+  main:
+    enabled: false
+    # className: nginx
+  monograph:
+    enabled: false
+    # className: nginx
+  identity:
+    enabled: false
+    # className: nginx
+
+env:
+  NOTESNOOK_APP_PUBLIC_URL: https://notesnook.example.com
+  MONOGRAPH_PUBLIC_URL: https://monograph.example.com
+  ATTACHMENTS_SERVER_PUBLIC_URL: https://attachments.example.com
+  AUTH_SERVER_PUBLIC_URL: https://auth.example.com
+  DISABLE_SIGNUPS: true
+
+mailhog:
+  enabled: false
+  auth:
+    enabled: true
+    existingSecret: mailhog-auth-secret
+  ingress:
+    enabled: false
+    # ingressClassName: nginx
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: mailhog.example.com
+        paths:
+          - path: /
+            pathType: Prefix
