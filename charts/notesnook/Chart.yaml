@@ -16,3 +16,6 @@ dependencies:
     condition: mailhog.enabled
 sources:
   - https://github.com/danielclasen/charts
+maintainers:
+  - name: danielclasen
+    email: daniel@clsn.cloud
