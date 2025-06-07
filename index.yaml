@@ -1,0 +1,28 @@
+apiVersion: v1
+entries:
+  notesnook:
+  - apiVersion: v2
+    appVersion: v1.0-beta.1
+    created: "2025-06-07T20:53:47.282490106Z"
+    dependencies:
+    - name: common
+      repository: https://bjw-s-labs.github.io/helm-charts
+      version: 4.0.1
+    - condition: mailhog.enabled
+      name: mailhog
+      repository: https://codecentric.github.io/helm-charts
+      version: 5.8.0
+    description: A Helm chart for Notesnook self-hosted deployment
+    digest: d22699e34150dcef3dfa6a03d8d9600e436e7aca85be3c5f4921ec8fe2fe6b72
+    kubeVersion: '>=1.28.0-0'
+    maintainers:
+    - email: daniel@clsn.cloud
+      name: danielclasen
+    name: notesnook
+    sources:
+    - https://github.com/danielclasen/charts
+    type: application
+    urls:
+    - https://github.com/danielclasen/charts/releases/download/notesnook-0.1.0/notesnook-0.1.0.tgz
+    version: 0.1.0
+generated: "2025-06-07T20:53:47.282499374Z"
