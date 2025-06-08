@@ -2,7 +2,7 @@ apiVersion: v2
 name: notesnook
 description: A Helm chart for Notesnook self-hosted deployment
 type: application
-version: 0.1.0
+version: 0.1.1
 # renovate datasource=docker depName=docker.io/streetwriters/notesnook-sync
 appVersion: "v1.0-beta.1"
 kubeVersion: ">=1.28.0-0"
