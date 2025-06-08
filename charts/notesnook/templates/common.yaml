@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/refs/tags/app-template-4.0.1/charts/other/app-template/values.schema.json
 {{- include "bjw-s.common.loader.init" . }}
 
 {{- define "notesnook.hardcodedEnv" -}}
@@ -33,46 +34,58 @@ controllers:
         image:
           repository: docker.io/streetwriters/notesnook-sync
           tag: "{{ .Chart.AppVersion }}"
-        livenessProbe:
-            tcpSocket:
-              port: {{ .Values.env.NOTESNOOK_SERVER_PORT }}
-        readinessProbe:
-            tcpSocket:
-              port: {{ .Values.env.NOTESNOOK_SERVER_PORT }}
+        probes:
+          liveness:
+            enabled: true
+            port: {{ .Values.env.NOTESNOOK_SERVER_PORT }}
+            type: TCP
+          readiness:
+            enabled: true
+            port: {{ .Values.env.NOTESNOOK_SERVER_PORT }}
+            type: TCP
       sse:
         image:
           repository: docker.io/streetwriters/sse
           tag: "{{ .Chart.AppVersion }}"
-        livenessProbe:
-            tcpSocket:
-              port: {{ .Values.env.SSE_SERVER_PORT }}
-        readinessProbe:
-            tcpSocket:
-              port: {{ .Values.env.SSE_SERVER_PORT }}
+        probes:
+          liveness:
+            enabled: true
+            port: {{ .Values.env.SSE_SERVER_PORT }}
+            type: TCP
+          readiness:
+            enabled: true
+            port: {{ .Values.env.SSE_SERVER_PORT }}
+            type: TCP
       monograph:
         image:
           repository: docker.io/streetwriters/monograph
           # renovate datasource=docker depName=docker.io/streetwriters/monograph
           tag: 1.2.4
         env:
-          API_HOST: http://{{ .Values.env.MONOGRAPH_HOST }}:{{ .Values.env.MONOGRAPH_PORT }}
+          API_HOST: "http://{{ .Values.env.MONOGRAPH_HOST }}:{{ .Values.env.MONOGRAPH_PORT }}"
           PUBLIC_URL: {{ .Values.env.MONOGRAPH_PUBLIC_URL }}
-        livenessProbe:
-            tcpSocket:
-              port: {{ .Values.env.MONOGRAPH_PORT }}
-        readinessProbe:
-            tcpSocket:
-              port: {{ .Values.env.MONOGRAPH_PORT }}
+        probes:
+          liveness:
+            enabled: true
+            port: {{ .Values.env.MONOGRAPH_PORT }}
+            type: TCP
+          readiness:
+            enabled: true
+            port: {{ .Values.env.MONOGRAPH_PORT }}
+            type: TCP
       identity:
         image:
           repository: docker.io/streetwriters/identity
           tag: "{{ .Chart.AppVersion }}"
-        livenessProbe:
-            tcpSocket:
-              port: {{ .Values.env.IDENTITY_SERVER_PORT }}
-        readinessProbe:
-            tcpSocket:
-              port: {{ .Values.env.IDENTITY_SERVER_PORT }}
+        probes:
+          liveness:
+            enabled: true
+            port: {{ .Values.env.IDENTITY_SERVER_PORT }}
+            type: TCP
+          readiness:
+            enabled: true
+            port: {{ .Values.env.IDENTITY_SERVER_PORT }}
+            type: TCP
 
 service:
   main:
