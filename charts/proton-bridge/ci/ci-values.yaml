@@ -1,3 +1,9 @@
+protonmailBridge:
+  login:
+    enabled: false
+  certificate:
+    enabled: false
+
 persistence:
   root:
     enabled: false

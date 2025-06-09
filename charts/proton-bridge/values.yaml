@@ -1,12 +1,33 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/refs/tags/app-template-4.0.1/charts/other/app-template/values.schema.json
 env:
   TZ: UTC
 
 protonmailBridge:
   login:
-    enabled: false
-    secretName: protonmail-bridge-login-secret
+    enabled: true
   certificate:
-    enabled: false
-    secretName: protonmail-bridge-certificate-secret
+    enabled: true
+
+service:
+  main:
+    controller: main
+    ports:
+      smtp:
+        port: 25
+      imap:
+        port: 143
+
+persistence:
+  root:
+    enabled: true
+    storageClass: "-"
+    size: 1Gi
+    accessMode: ReadWriteOnce
+  login:
+    enabled: true
+    type: secret
+    name: protonmail-bridge-login-secret
+  cert:
+    enabled: true
+    type: secret
+    name: protonmail-bridge-certificate-secret

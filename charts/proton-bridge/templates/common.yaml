@@ -71,31 +71,7 @@ controllers:
             info
             exit
             EOF          
-
-service:
-  main:
-    controller: main
-    ports:
-      smtp:
-        port: 25
-      imap:
-        port: 143
-
-persistence:
-  root:
-    enabled: {{ ne .Values.persistence.root.enabled false }}
-    storageClass: "-"
-    size: 1Gi
-    accessMode: ReadWriteOnce
-  login:
-    enabled: {{ .Values.protonmailBridge.login.enabled }}
-    type: secret
-    name: {{ .Values.protonmailBridge.login.secretName }}
-  cert:
-    enabled: {{ .Values.protonmailBridge.certificate.enabled }}
-    type: secret
-    name: {{ .Values.protonmailBridge.certificate.secretName }}
-
+            
 {{- end -}}
 {{- $_ := mergeOverwrite .Values (include "protonBridge.hardcodedValues" . | fromYaml) -}}
 
