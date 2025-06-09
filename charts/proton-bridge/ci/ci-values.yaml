@@ -1,0 +1,7 @@
+persistence:
+  root:
+    enabled: false
+  login:
+    enabled: false
+  cert:
+    enabled: false

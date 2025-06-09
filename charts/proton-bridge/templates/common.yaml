@@ -1,0 +1,103 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/refs/tags/app-template-4.0.1/charts/other/app-template/values.schema.json
+{{- include "bjw-s.common.loader.init" . }}
+
+{{- define "protonBridge.hardcodedValues" -}}
+controllers:
+  # Configure the main controller
+  main:
+    annotations:
+      reloader.stakater.com/auto: "true"
+    defaultContainerOptions:
+      env:
+      {{- .Values.env | toYaml | nindent 8 }}
+    containers:
+      # Configure the main application container
+      main:
+        image:
+          repository: docker.io/shenxn/protonmail-bridge
+          tag: "{{ .Chart.AppVersion }}"
+        command:
+          - /bin/bash
+          - -c
+          - |
+            pkill protonmail-bridge || true
+            (sleep 30; cat <<EOF
+            info
+            exit
+            EOF) | /protonmail/proton-bridge --cli
+{{- if .Values.protonmailBridge.certificate.enabled }}
+            while [ ! -s /cert/tls.crt ] || [ ! -s /cert/tls.key ]; do
+              echo "Waiting for certificate files /cert/tls.crt and /cert/tls.key to be present and non-empty..."
+              sleep 2
+            done
+
+            /protonmail/proton-bridge --cli <<EOF
+            change smtp-security
+            yes
+            cert import
+            /cert/tls.crt
+            /cert/tls.key
+            info
+            exit
+            EOF
+{{- end }}
+            /protonmail/proton-bridge --cli <<EOF | egrep '(Username|Password)' | sort -ru
+            info
+            EOF
+            socat TCP-LISTEN:25,fork TCP:127.0.0.1:1025 &
+            socat TCP-LISTEN:143,fork TCP:127.0.0.1:1143 &
+            rm -f faketty
+            mkfifo faketty
+            cat faketty | /protonmail/proton-bridge --cli $@
+
+    initContainers:
+      login:
+        enabled: {{ .Values.protonmailBridge.login.enabled }}
+        image:
+          repository: docker.io/shenxn/protonmail-bridge
+          tag: "{{ .Chart.AppVersion }}"
+        command:
+          - /bin/bash
+          - -c
+          - |
+            gpg --generate-key --batch /protonmail/gpgparams
+            pass init pass-key
+            pkill protonmail-bridge || true
+            /protonmail/proton-bridge --cli <<EOF
+            login
+            $(cat /login/email)
+            $(cat /login/password)
+            info
+            exit
+            EOF          
+
+service:
+  main:
+    controller: main
+    ports:
+      smtp:
+        port: 25
+      imap:
+        port: 143
+
+persistence:
+  root:
+    enabled: {{ ne .Values.persistence.root.enabled false }}
+    storageClass: "-"
+    size: 1Gi
+    accessMode: ReadWriteOnce
+  login:
+    enabled: {{ .Values.protonmailBridge.login.enabled }}
+    type: secret
+    name: {{ .Values.protonmailBridge.login.secretName }}
+  cert:
+    enabled: {{ .Values.protonmailBridge.certificate.enabled }}
+    type: secret
+    name: {{ .Values.protonmailBridge.certificate.secretName }}
+
+{{- end -}}
+{{- $_ := mergeOverwrite .Values (include "protonBridge.hardcodedValues" . | fromYaml) -}}
+
+{{/* Render the templates */}}
+{{ include "bjw-s.common.loader.generate" . }}
