@@ -52,6 +52,27 @@ entries:
   proton-bridge:
   - apiVersion: v2
     appVersion: 3.19.0-build
+    created: "2025-06-09T02:17:40.267499814Z"
+    dependencies:
+    - name: common
+      repository: https://bjw-s-labs.github.io/helm-charts
+      version: 4.0.1
+    description: A Helm chart to run a Proton Bridge instance as a smtp relay
+    digest: b120752879eef7f21ce831720d95e4b96282baa2211edbd2887c5143cdfac3ea
+    kubeVersion: '>=1.28.0-0'
+    maintainers:
+    - email: daniel@clsn.cloud
+      name: danielclasen
+    name: proton-bridge
+    sources:
+    - https://github.com/danielclasen/charts
+    - https://github.com/shenxn/protonmail-bridge-docker
+    type: application
+    urls:
+    - https://github.com/danielclasen/charts/releases/download/proton-bridge-0.1.1/proton-bridge-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 3.19.0-build
     created: "2025-06-09T01:51:27.327950059Z"
     dependencies:
     - name: common
@@ -71,4 +92,4 @@ entries:
     urls:
     - https://github.com/danielclasen/charts/releases/download/proton-bridge-0.1.0/proton-bridge-0.1.0.tgz
     version: 0.1.0
-generated: "2025-06-09T01:51:27.327961831Z"
+generated: "2025-06-09T02:17:40.267514111Z"
