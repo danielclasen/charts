@@ -103,6 +103,7 @@ persistence:
   root:
     enabled: true
     storageClass: "-"
+    size: 1Gi
     accessMode: ReadWriteOnce
   login:
     enabled: {{ .Values.protonmailBridge.login.enabled }}
