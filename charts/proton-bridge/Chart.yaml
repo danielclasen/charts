@@ -2,7 +2,7 @@ apiVersion: v2
 name: proton-bridge
 description: A Helm chart to run a Proton Bridge instance as a smtp relay
 type: application
-version: 0.1.0
+version: 0.1.1
 # renovate datasource=docker depName=docker.io/shenxn/protonmail-bridge
 appVersion: "3.19.0-build"
 kubeVersion: ">=1.28.0-0"
