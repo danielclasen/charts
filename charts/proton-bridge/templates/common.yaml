@@ -21,11 +21,11 @@ controllers:
           - /bin/bash
           - -c
           - |
-            pkill protonmail-bridge || true
             (sleep 30; cat <<EOF
             info
             exit
-            EOF) | /protonmail/proton-bridge --cli
+            EOF
+            ) | /protonmail/proton-bridge --cli
 {{- if .Values.protonmailBridge.certificate.enabled }}
             while [ ! -s /cert/tls.crt ] || [ ! -s /cert/tls.key ]; do
               echo "Waiting for certificate files /cert/tls.crt and /cert/tls.key to be present and non-empty..."
@@ -62,7 +62,6 @@ controllers:
           - |
             gpg --generate-key --batch /protonmail/gpgparams
             pass init pass-key
-            pkill protonmail-bridge || true
             /protonmail/proton-bridge --cli <<EOF
             login
             $(cat /login/email)
