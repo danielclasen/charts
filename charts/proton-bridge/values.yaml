@@ -1,0 +1,10 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/refs/tags/app-template-4.0.1/charts/other/app-template/values.schema.json
+
+protonmailBridge:
+  login:
+    enabled: false
+    secretName: protonmail-bridge-login-secret
+  certificate:
+    enabled: false
+    secretName: protonmail-bridge-certificate-secret

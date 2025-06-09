@@ -1,0 +1,55 @@
+{{- define "custom.helm.url" -}}
+https://danielclasen.github.io/charts/
+{{- end -}}
+
+{{ template "chart.header" . }}
+
+{{ template "chart.versionBadge" . }}{{ template "chart.typeBadge" . }}{{ template "chart.appVersionBadge" . }}
+
+{{ template "chart.description" . }}
+
+{{ template "chart.sourcesSection" . }}
+
+## Requirements
+
+{{ template "chart.kubeVersionLine" . }}
+
+## Dependencies
+
+{{ template "chart.requirementsTable" . }}
+
+## Installing the Chart
+
+### Helm repository
+
+```bash
+# Add the repository
+helm repo add danielclasen {{template "custom.helm.url"}}
+
+# Install the chart
+helm install danielclasen proton-bridge -f values.yaml
+```
+
+### OCI
+
+```bash
+# Install the chart
+helm install oci://ghcr.io/danielclasen/charts/proton-bridge -f values.yaml
+```
+
+## Configuration
+
+Read through the [values.yaml](../../library/common/values.yaml) file of the [common library](../../library/common/) chart. It has several commented out suggested values.
+The [CI tests](../../library/common-test/ci) contain a number of scenarios that may prove useful as well.
+
+## Upgrade instructions
+
+Upgrade instructions can be found in the [documentation](https://bjw-s-labs.github.io/helm-charts/docs/app-template/#upgrade-instructions).
+
+## Support
+
+- See the [Docs](http://bjw-s-labs.github.io/helm-charts/docs/)
+- Open an [issue](https://github.com/bjw-s-labs/helm-charts/issues/new/choose)
+- Join the home-operations [Discord](https://discord.gg/home-operations) community
+
+{{ template "helm-docs.versionFooter" . }}
