@@ -2,13 +2,13 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/refs/tags/app-template-4.0.1/charts/other/app-template/values.schema.json
 {{- include "bjw-s.common.loader.init" . }}
 {{- define "protonBridge.hardcodedEnv" -}}
-{{- if not .Values.env }}
+{{ if not .Values.env }}
 env:
-{{- if not .Values.env.TZ }}
+{{ if not .Values.env.TZ }}
   TZ: UTC
-{{- end }}
-{{- end }}
-{{- end }}
+{{ end }}
+{{ end }}
+{{- end -}}
 {{- $_ := mergeOverwrite .Values (include "protonBridge.hardcodedEnv" . | fromYaml) -}}
 
 {{- define "protonBridge.hardcodedValues" -}}
