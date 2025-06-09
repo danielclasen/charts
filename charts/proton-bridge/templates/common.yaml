@@ -31,7 +31,6 @@ controllers:
               echo "Waiting for certificate files /cert/tls.crt and /cert/tls.key to be present and non-empty..."
               sleep 2
             done
-
             /protonmail/proton-bridge --cli <<EOF
             change smtp-security
             yes
@@ -49,7 +48,7 @@ controllers:
             socat TCP-LISTEN:143,fork TCP:127.0.0.1:1143 &
             rm -f faketty
             mkfifo faketty
-            cat faketty | /protonmail/proton-bridge --cli $@
+            cat faketty | /protonmail/proton-bridge --cli
 
     initContainers:
       login:
@@ -71,7 +70,7 @@ controllers:
             info
             exit
             EOF          
-            
+
 {{- end -}}
 {{- $_ := mergeOverwrite .Values (include "protonBridge.hardcodedValues" . | fromYaml) -}}
 
