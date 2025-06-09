@@ -90,18 +90,15 @@ controllers:
 
 service:
   main:
-    enabled: true
     controller: main
     ports:
       smtp:
         port: 25
       imap:
-        enabled: false
         port: 143
 
 persistence:
   root:
-    enabled: true
     storageClass: "-"
     size: 1Gi
     accessMode: ReadWriteOnce
